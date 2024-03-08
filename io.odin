@@ -6,7 +6,7 @@ import uni "core:unicode/utf8"
 
 ////////
 
-input := "a"
+input := "abc"
 input_index : int
 
 open :: proc () {
@@ -17,14 +17,21 @@ close :: proc () {
 }
 
 getr :: proc () -> rune {
-    r := uni.rune_at_pos (input, input_index)
-    input_index += 1
-    return r
+    if input_index >= len (input) {
+	return nr
+    } else {
+	r := uni.rune_at_pos (input, input_index)
+	input_index += 1
+	fmt.println ("getr", r)
+	return r
+    }
 }
 
 put_back :: proc (r : rune) {
-    input_index -= 1
-    fmt.assertf (r == uni.rune_at_pos (input, input_index), "FATAL in put_back")
+    if r != EOFrune {
+	input_index -= 1
+	fmt.assertf (r == uni.rune_at_pos (input, input_index), "FATAL in put_back")
+    }
 }
 
 ///
@@ -92,10 +99,10 @@ ReadListInnards :: proc () -> Ptr {
     }
 }
 
-		
 // testing
 
 main :: proc () {
     open ()
-    fmt.println (getr ())
+    ReadAtom ('A')
+    fmt.println (mem)
 }

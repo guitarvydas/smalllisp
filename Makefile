@@ -1,4 +1,4 @@
-all: clean
+dev: clean
 	odin run .
 
 clean:
