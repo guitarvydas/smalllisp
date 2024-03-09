@@ -6,7 +6,7 @@ import uni "core:unicode/utf8"
 
 ////////
 
-input := "abc"
+input := "ab"
 input_index : int
 
 open :: proc () {
@@ -22,7 +22,6 @@ getr :: proc () -> rune {
     } else {
 	r := uni.rune_at_pos (input, input_index)
 	input_index += 1
-	fmt.println ("getr", r)
 	return r
     }
 }
@@ -99,10 +98,3 @@ ReadListInnards :: proc () -> Ptr {
     }
 }
 
-// testing
-
-main :: proc () {
-    open ()
-    ReadAtom ('A')
-    fmt.println (mem)
-}
