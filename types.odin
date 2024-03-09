@@ -6,7 +6,7 @@ MemPtr :: i16
 Ptr :: MemPtr
 nr :: '⊥' // null rune
 EOFrune :: nr
-lisp_nil :: MemMiddle // > nil == list cells, < nil == atoms
+lisp_nil :: 0 // > nil --> list cells, < nil --> atoms
 offset :: MemMiddle
 
 ENDcharacter : rune // == 0
