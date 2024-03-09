@@ -5,7 +5,7 @@ MemMiddle :: MemSize / 2
 MemPtr :: i16
 Ptr :: MemPtr
 nr :: '⊥' // null rune
-EOFrune :: nr
+EOF :: nr
 lisp_nil :: 0 // > nil --> list cells, < nil --> atoms
 offset :: MemMiddle
 

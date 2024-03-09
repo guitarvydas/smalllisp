@@ -20,13 +20,13 @@ getr :: proc () -> rune {
 	return nr
     } else {
 	r := uni.rune_at_pos (input, input_index)
-	input_index += 1
+	input_index += uni.rune_size (r)
 	return r
     }
 }
 
 put_back :: proc (r : rune) {
-    if r != EOFrune {
+    if r != EOF {
 	input_index -= 1
 	fmt.assertf (r == uni.rune_at_pos (input, input_index), "FATAL in put_back")
     }
@@ -34,17 +34,6 @@ put_back :: proc (r : rune) {
 
 ///
 
-Read :: proc () -> Ptr {
-    c := getr ()
-    for is_whitespace (c) {
-	c = getr ()
-    }
-    if c == '(' {
-	return ReadList (c);
-    } else {
-	return ReadAtom (c);
-    }
-}
 
 is_whitespace :: proc (c : rune) -> bool {
     if c == ' ' || c == '\n' || c == '\t' {
@@ -57,14 +46,34 @@ is_whitespace :: proc (c : rune) -> bool {
 is_terminator :: proc (c : rune) -> bool {
     if is_whitespace (c) {
 	return true
-    } else if c == '(' || c == ')' || c == EOFrune {
+    } else if c == '(' || c == ')' || c == EOF {
 	return true
     } else {
 	return false
     }
 }
 
-    
+is_EOF :: proc (c : rune) -> bool {
+    return c == EOF
+}
+
+get_non_whitespace :: proc () -> rune {
+    c := getr ()
+    for ; is_whitespace (c) || is_EOF (c); c = getr () {
+    }
+    return c
+}
+
+Read :: proc () -> Ptr {
+    c := get_non_whitespace ()
+    fmt.assertf (c != EOF, "FATAL error: EOF in Read")
+    if c == '(' {
+	return ReadList (c);
+    } else {
+	return ReadAtom (c);
+    }
+}
+
 ReadAtom :: proc (parsed_c : rune) -> Ptr {
     save_rune :: proc (r : rune, buffer : ^strings.Builder) {
 	strings.write_rune (buffer, r)
@@ -88,7 +97,8 @@ ReadList :: proc (c : rune) -> Ptr {
 }
 
 ReadListInnards :: proc () -> Ptr {
-    r := getr ()
+    r := get_non_whitespace ()
+    fmt.assertf (r != EOF, "FATAL error: unterminated list, EOF encountered before matching ')'")
     if r == ')' {
 	return lisp_nil
     } else {
