@@ -6,7 +6,6 @@ import uni "core:unicode/utf8"
 
 ////////
 
-input := "ab"
 input_index : int
 
 open :: proc () {
@@ -72,11 +71,13 @@ ReadAtom :: proc (parsed_c : rune) -> Ptr {
     }
     buffer := strings.builder_make ()
     save_rune (parsed_c, &buffer)
-    c := rune{}
-    for c = getr () ; !is_terminator (c) ; c = getr (){
-	save_rune (c, &buffer)
+    {
+	c := rune{}
+	for c = getr () ; !is_terminator (c) ; c = getr (){
+	    save_rune (c, &buffer)
+	}
+	put_back (c)
     }
-    put_back (c)
     p := intern (strings.to_string (buffer))
     return p
 }

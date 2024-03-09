@@ -1,6 +1,6 @@
 package smalllisp
 
-MemSize :: 1001
+MemSize :: 17
 MemMiddle :: MemSize / 2
 MemPtr :: i16
 Ptr :: MemPtr
@@ -10,5 +10,10 @@ lisp_nil :: MemMiddle // > nil == list cells, < nil == atoms
 offset :: MemMiddle
 
 ENDcharacter : rune // == 0
-CellLength :: 2 * size_of (Ptr)
-CDRoffset :: size_of (Ptr)
+CARsize :: 1
+CDRsize :: 1
+CellLength :: CARsize + CDRsize
+CDRoffset :: CARsize
+
+FIRSTAtom :: -2
+FIRSTList :: 1

@@ -14,8 +14,8 @@ Atom :: proc (p : Ptr) -> bool { return p < offset }
 Null :: proc (p : Ptr) -> bool { return p == offset }
 
 
-nextAtom : Ptr = -1
-nextList : Ptr = 1
+nextAtom : Ptr = FIRSTAtom
+nextList : Ptr = FIRSTList
 
 mem := [MemSize]Ptr{}
 
@@ -35,6 +35,7 @@ AllocAtom :: proc () -> Ptr {
     fmt.assertf ((nextAtom + offset) > 0, "out of (atom) memory\n")
     r := nextAtom
     nextAtom = nextAtom - CellLength
+    fmt.printf ("AllocAtom %v (next=%v)\n", r, nextAtom)
     return r
 }
 

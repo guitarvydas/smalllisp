@@ -65,6 +65,7 @@ install_new_atom_helper :: proc (b : string) -> Ptr {
 	car := transmute (Ptr) ([2]byte{first_byte, cast (byte) ENDcharacter})
 	Set (a, car)
 	Set (a+CDRoffset, lisp_nil)
+	fmt.printf ("inah 1 %v [%x | %x]\n", b, Get (a), Get (a+CDRoffset))
 	return a
     } else if 2 == len (b) {
 	a := AllocAtom ()
@@ -73,6 +74,7 @@ install_new_atom_helper :: proc (b : string) -> Ptr {
 	car := transmute (Ptr) ([2]byte{first_byte, second_byte})
 	Set (a, car)
 	Set (a+CDRoffset, lisp_nil)
+	fmt.printf ("inah 2 %v [%x | %x]\n", b, Get (a), Get (a+CDRoffset))
 	return a
     } else {
 	a := AllocAtom ()
@@ -82,6 +84,7 @@ install_new_atom_helper :: proc (b : string) -> Ptr {
 	car := transmute (Ptr) ([2]byte{first_byte, second_byte})
 	Set (a, car)
 	Set (a+CDRoffset, d)
+	fmt.printf ("inah >2 %v [%x | %x]\n", b, Get (a), Get (a+CDRoffset))
 	return a
     }
 }
@@ -93,7 +96,7 @@ intern :: proc (s : string) -> Ptr {
     // if s is not already an Atom, make an Atom with the given name and return a Ptr to the first cell
 
     // search for existing
-    head : Ptr = -1
+    head : Ptr = FIRSTAtom
     for in_atom_space (head) {
 	if match_string_from_beginning (s, head) {
 	    return head
