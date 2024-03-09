@@ -17,7 +17,7 @@ close :: proc () {
 
 getr :: proc () -> rune {
     if input_index >= len (input) {
-	return nr
+	return EOF
     } else {
 	r := uni.rune_at_pos (input, input_index)
 	input_index += uni.rune_size (r)
@@ -109,3 +109,31 @@ ReadListInnards :: proc () -> Ptr {
     }
 }
 
+
+Format :: proc (p : Ptr) -> string {
+    if is_Nil (p) {
+	return "nil"
+    } else if is_Atom (p) {
+	return atom_as_String (p)
+    } else {
+	left := Format (Car (p))
+	right := Format (Cdr (p))
+	return fmt.aprintf ("(%v . %v)", left, right)
+    }	
+}
+
+atom_as_String :: proc (p : Ptr) -> string {
+    bp := strings.builder_make ()
+    return strings.to_string (bp)
+}
+
+atom_as_Builder :: proc (p : Ptr, builderp : ^strings.Builder) -> ^strings.Builder {
+    c := GetByte (p)
+    if c == EOF {
+	strings.write_byte (builderp, c)
+    } else {
+	strings.write_byte (builderp, c)
+	atom_as_Builder (Cdr (p), builderp)
+    }
+    return builderp
+}

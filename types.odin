@@ -1,11 +1,11 @@
 package smalllisp
+import uni "core:unicode/utf8"
 
 MemSize :: 65
 MemMiddle :: MemSize / 2
 MemPtr :: i16
 Ptr :: MemPtr
-nr :: '⊥' // null rune
-EOF :: nr
+EOF :: 0
 lisp_nil :: 0 // > nil --> list cells, < nil --> atoms
 offset :: MemMiddle
 
@@ -21,7 +21,11 @@ FIRSTList :: 1
 // list: car == Ptr, cdr == Ptr
 // where Ptr might be 0, meaning nil
 
-in_atom_space :: proc (p : Ptr) -> bool {
+is_Nil ::proc (p : Ptr) -> bool {
+    return p == lisp_nil
+}
+
+is_Atom :: proc (p : Ptr) -> bool {
     return (p < 0) && ((p + offset) >= 0)
 }
 
