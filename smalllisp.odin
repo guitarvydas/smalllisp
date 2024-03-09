@@ -19,23 +19,18 @@ nextList : Ptr = FIRSTList
 
 mem := [MemSize]Ptr{}
 
-GetFirstByte :: proc (p : Ptr) -> byte {
-    p := mem [p + offset]
-    a := transmute ([2]byte) p
-    return a[0]
+GetByte :: proc (p : Ptr) -> byte {
+    return cast (byte) mem [p + offset]
 }
 
-GetSecondByte :: proc (p : Ptr) -> byte {
-    p := mem [p + offset]
-    a := transmute ([2]byte) p
-    return a[1]
+SetByte :: proc (p : Ptr, v : byte) {
+    mem [p + offset] = cast (Ptr) v
 }
 
 AllocAtom :: proc () -> Ptr {
     fmt.assertf ((nextAtom + offset) > 0, "out of (atom) memory\n")
     r := nextAtom
     nextAtom = nextAtom - CellLength
-    fmt.printf ("AllocAtom %v (next=%v)\n", r, nextAtom)
     return r
 }
 

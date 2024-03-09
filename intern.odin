@@ -16,25 +16,8 @@ match_string :: proc (s : string, atom_ptr : Ptr) -> bool {
 	    return false 
 	}
     } else {
-	first_byte_in_atom := GetFirstByte (atom_ptr)
-	second_byte_in_atom := ENDcharacterAsByte
-	if 1 < len (s) {
-	    second_byte_in_atom = GetSecondByte (atom_ptr)
-	}	    
-	next := Cdr (atom_ptr)
-
-	if s [0] == first_byte_in_atom {
-	    if 1 == len (s) {
-		if ENDcharacterAsByte == second_byte_in_atom {
-		    return true
-		} else {
-		    return false
-		}
-	    } else if s [1] == second_byte_in_atom {
-		return match_string (s [2:], next)
-	    } else {
-		return false
-	    }
+	if s [0] == GetByte (atom_ptr) {
+	    return match_string (s [1:], Cdr (atom_ptr))
 	} else {
 	    return false
 	}
@@ -42,16 +25,11 @@ match_string :: proc (s : string, atom_ptr : Ptr) -> bool {
 }
 
 find_next_atom :: proc (p : Ptr) -> Ptr {
-    fmt.printf ("find_next_atom %v [%v | %v]\n", p, Car (p), Cdr (p))
     next := Cdr (p)
     for lisp_nil != next {
 	next = Cdr (next)
     }
     return next
-}
-
-in_atom_space :: proc (p : Ptr) -> bool {
-    return p > nextAtom
 }
 
 install_new_atom :: proc (s : string) -> Ptr {
@@ -62,36 +40,13 @@ install_new_atom :: proc (s : string) -> Ptr {
 install_new_atom_helper :: proc (b : string) -> Ptr {
     if 0 == len (b) {
 	return lisp_nil
-    } else if 1 == len (b) {
-	a := AllocAtom ()
-	first_byte := b [0]
-	car := transmute (Ptr) ([2]byte{first_byte, cast (byte) ENDcharacter})
-	Set (a, car)
-	Set (a+CDRoffset, lisp_nil)
-	fmt.printf ("inah 1 %v [%x | %x]\n", b, Get (a), Get (a+CDRoffset))
-	return a
-    } else if 2 == len (b) {
-	a := AllocAtom ()
-	first_byte := b [0]
-	second_byte := b [1]
-	car := transmute (Ptr) ([2]byte{first_byte, second_byte})
-	Set (a, car)
-	Set (a+CDRoffset, lisp_nil)
-	fmt.printf ("inah 2 %v [%x | %x]\n", b, Get (a), Get (a+CDRoffset))
-	return a
     } else {
 	a := AllocAtom ()
-	first_byte := b [0]
-	second_byte := b [1]
-	d := install_new_atom_helper (b [2:])
-	car := transmute (Ptr) ([2]byte{first_byte, second_byte})
-	Set (a, car)
-	Set (a+CDRoffset, d)
-	fmt.printf ("inah >2 %v [%x | %x]\n", b, Get (a), Get (a+CDRoffset))
+	SetByte (a, b [0])
+	Set (a+CDRoffset, install_new_atom_helper (b [1:]))
 	return a
     }
 }
-	
 
 intern :: proc (s : string) -> Ptr {
     // scan all Atoms
@@ -100,11 +55,12 @@ intern :: proc (s : string) -> Ptr {
 
     // search for existing
     head : Ptr = FIRSTAtom
-    for in_atom_space (head) {
+    for head != lisp_nil {
 	if match_string_from_beginning (s, head) {
 	    return head
 	}
 	head = find_next_atom (head)
+	fmt.assertf ((head == lisp_nil) || in_atom_space (head), "FATAL internal error in intern")
     }
 
     // install new
