@@ -59,13 +59,25 @@ install_new_atom :: proc (s : string) -> Ptr {
 install_new_atom_helper :: proc (b : string) -> Ptr {
     if 0 == len (b) {
 	return lisp_nil
+    } else if 1 == len (b) {
+	a := AllocAtom ()
+	first_byte := b [0]
+	car := transmute (Ptr) ([2]byte{first_byte, cast (byte) ENDcharacter})
+	Set (a, car)
+	Set (a+CDRoffset, lisp_nil)
+	return a
+    } else if 2 == len (b) {
+	a := AllocAtom ()
+	first_byte := b [0]
+	second_byte := b [1]
+	car := transmute (Ptr) ([2]byte{first_byte, second_byte})
+	Set (a, car)
+	Set (a+CDRoffset, lisp_nil)
+	return a
     } else {
 	a := AllocAtom ()
 	first_byte := b [0]
-	second_byte := cast (byte) ENDcharacter
-	if 1 < len (b) {
-	    second_byte = b [1]
-	}
+	second_byte := b [1]
 	d := install_new_atom_helper (b [2:])
 	car := transmute (Ptr) ([2]byte{first_byte, second_byte})
 	Set (a, car)
@@ -90,6 +102,7 @@ intern :: proc (s : string) -> Ptr {
     }
 
     // install new
-    return install_new_atom (s)
+    a := install_new_atom (s)
+    return a
 }
 		
