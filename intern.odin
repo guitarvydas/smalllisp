@@ -5,13 +5,12 @@ import "core:strings"
 match_string_from_beginning :: proc (s : string, atom_ptr : Ptr) -> bool {
     fmt.assertf (atom_ptr <= lisp_nil, "FATAL internal error in match_string_from_beginning (nil) %v", atom_ptr)
     fmt.assertf (len (s) > 0, "FATAL internal error in match_string_from_beginning (len s) %v", atom_ptr)
-    s_as_bytes := transmute ([]byte) s
-    return match_string (s_as_bytes, atom_ptr)
+    return match_string (s, atom_ptr)
 }
 
-match_string :: proc (s_bytes : []byte, atom_ptr : Ptr) -> bool {
+match_string :: proc (s : string, atom_ptr : Ptr) -> bool {
     if atom_ptr == lisp_nil {
-	if 0 == len (s_bytes) { // end of atom && end of string
+	if 0 == len (s) { // end of atom && end of string
 	    return true
 	} else {                // end of atom but not end of string
 	    return false 
@@ -19,20 +18,20 @@ match_string :: proc (s_bytes : []byte, atom_ptr : Ptr) -> bool {
     } else {
 	first_byte_in_atom := GetFirstByte (atom_ptr)
 	second_byte_in_atom := ENDcharacterAsByte
-	if 1 < len (s_bytes) {
+	if 1 < len (s) {
 	    second_byte_in_atom = GetSecondByte (atom_ptr)
 	}	    
 	next := Cdr (atom_ptr)
 
-	if s_bytes [0] == first_byte_in_atom {
-	    if 1 == len (s_bytes) {
+	if s [0] == first_byte_in_atom {
+	    if 1 == len (s) {
 		if ENDcharacterAsByte == second_byte_in_atom {
 		    return true
 		} else {
 		    return false
 		}
-	    } else if s_bytes [1] == second_byte_in_atom {
-		return match_string (s_bytes [2:], next)
+	    } else if s [1] == second_byte_in_atom {
+		return match_string (s [2:], next)
 	    } else {
 		return false
 	    }
