@@ -10,6 +10,7 @@ lisp_nil :: MemMiddle // > nil == list cells, < nil == atoms
 offset :: MemMiddle
 
 ENDcharacter : rune // == 0
+ENDcharacterAsByte : byte = 0
 CARsize :: 1
 CDRsize :: 1
 CellLength :: CARsize + CDRsize
