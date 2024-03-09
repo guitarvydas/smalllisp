@@ -8,8 +8,9 @@ input0 := ""
 input1 := "1"
 input2 := "12"
 input3 := "123"
+input4 := "1234"
 
-input := input0
+input := input4
 
 main :: proc () {
     open ()
