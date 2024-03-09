@@ -3,8 +3,8 @@ import "core:fmt"
 import "core:strings"
 
 match_string_from_beginning :: proc (s : string, atom_ptr : Ptr) -> bool {
-    fmt.assertf (atom_ptr < lisp_nil, "FATAL internal error in match_string_from_beginning (nil)")
-    fmt.assertf (len (s) > 0, "FATAL internal error in match_string_from_beginning (len s)")
+    fmt.assertf (atom_ptr <= lisp_nil, "FATAL internal error in match_string_from_beginning (nil) %v", atom_ptr)
+    fmt.assertf (len (s) > 0, "FATAL internal error in match_string_from_beginning (len s) %v", atom_ptr)
     s_as_bytes := transmute ([]byte) s
     return match_string (s_as_bytes, atom_ptr)
 }
@@ -18,13 +18,16 @@ match_string :: proc (s_bytes : []byte, atom_ptr : Ptr) -> bool {
 	}
     } else {
 	first_byte_in_atom := GetFirstByte (atom_ptr)
-	second_byte_in_atom := GetSecondByte (atom_ptr)
+	second_byte_in_atom := ENDcharacterAsByte
+	if 1 < len (s_bytes) {
+	    second_byte_in_atom = GetSecondByte (atom_ptr)
+	}	    
 	next := Cdr (atom_ptr)
 
 	if s_bytes [0] == first_byte_in_atom {
 	    if 1 == len (s_bytes) {
-		if cast (byte) ENDcharacter == second_byte_in_atom {
-		    return match_string (s_bytes [2:], next)
+		if ENDcharacterAsByte == second_byte_in_atom {
+		    return true
 		} else {
 		    return false
 		}
@@ -40,6 +43,7 @@ match_string :: proc (s_bytes : []byte, atom_ptr : Ptr) -> bool {
 }
 
 find_next_atom :: proc (p : Ptr) -> Ptr {
+    fmt.printf ("find_next_atom %v [%v | %v]\n", p, Car (p), Cdr (p))
     next := Cdr (p)
     for lisp_nil != next {
 	next = Cdr (next)
