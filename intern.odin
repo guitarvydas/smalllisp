@@ -60,7 +60,7 @@ intern :: proc (s : string) -> Ptr {
 	    return head
 	}
 	head = find_next_atom (head)
-	fmt.assertf ((head == lisp_nil) || in_atom_space (head), "FATAL internal error in intern")
+	fmt.assertf ((head == lisp_nil) || is_Atom (head), "FATAL internal error in intern")
     }
 
     // install new
