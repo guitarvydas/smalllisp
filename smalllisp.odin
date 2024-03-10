@@ -28,14 +28,14 @@ SetByte :: proc (p : Ptr, v : byte) {
 AllocAtom :: proc () -> Ptr {
     fmt.assertf (within_mem_boundaries (nextAtom), "out of (atom) memory\n")
     r := nextAtom
-    nextAtom = nextAtom - CellLength
+    nextAtom = nextAtom + CellLength
     return r
 }
 
 AllocList :: proc () -> Ptr { 
     fmt.assertf (within_mem_boundaries (nextList), "out of (list) memory\n")
     r := nextList
-    nextList = nextList + CellLength
+    nextList = nextList - CellLength
     return r
 }
 
@@ -47,19 +47,18 @@ Cons :: proc (left : Ptr, right : Ptr) -> Ptr {
 }
 
 initialize :: proc () {
-    nextAtom  = FIRSTAtom
-    nextList  = FIRSTList
     for i := 0 ; i < len (mem) ; i += 1 {
 	mem [i] = 0
     }
-    n := intern ("nil")
-    Set (0, n)
-    Set (0+1, 0)
-    intern ("t")
-    intern ("car")
-    intern ("cdr")
-    intern ("atom")
-    intern ("cond")
-    intern ("cons")
-    intern ("quote")
+    nextAtom  = FIRSTAtom
+    nextList  = FIRSTList
+    install_new_atom ("nil")	// 0
+    install_new_atom ("t")	// 6
+    install_new_atom ("eq")	// 8
+    install_new_atom ("car")	// 12
+    install_new_atom ("cdr")	// 18
+    install_new_atom ("atom")	// 24
+    install_new_atom ("cond")	// 32
+    install_new_atom ("cons")	// 40
+    install_new_atom ("quote")	// 48
 }

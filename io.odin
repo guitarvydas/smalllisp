@@ -109,35 +109,34 @@ ReadListInnards :: proc () -> Ptr {
     }
 }
 
-
-Format :: proc (p : Ptr) -> string {
+// uf ==> unfriendly
+ufFormat :: proc (p : Ptr) -> string {
     if is_Nil (p) {
 	return "nil"
     } else if is_Atom (p) {
 	return atom_as_String (p)
     } else {
-	left := Format (Car (p))
-	right := Format (Cdr (p))
+	left := ufFormat (Car (p))
+	right := ufFormat (Cdr (p))
 	return fmt.aprintf ("(%v . %v)", left, right)
     }	
 }
 
 atom_as_String :: proc (p : Ptr) -> string {
-    fmt.println ("atom_as_String", p)
     b := strings.builder_make ()
     atom_as_Builder (p, &b)
-    fmt.println (b)
     return strings.to_string (b)
 }
 
 atom_as_Builder :: proc (p : Ptr, builderp : ^strings.Builder) -> ^strings.Builder {
-    c := GetByte (p)
-    fmt.println ("atom_as_Builder", p, c)
-    if c == EOF {
-	strings.write_byte (builderp, c)
-    } else {
-	strings.write_byte (builderp, c)
-	atom_as_Builder (Cdr (p), builderp)
+    if !is_Nil (p) {
+	c := GetByte (p)
+	if c == EOF {
+	    strings.write_byte (builderp, c)
+	} else {
+	    strings.write_byte (builderp, c)
+	    atom_as_Builder (Cdr (p), builderp)
+	}
     }
     return builderp
 }

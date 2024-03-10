@@ -34,7 +34,7 @@ find_next_atom :: proc (p : Ptr) -> Ptr {
 
 install_new_atom :: proc (s : string) -> Ptr {
     fmt.assertf (len (s) > 0, "FATAL internal error: in install_new_atom")
-    return install_new_atom_helper (s[:])
+    return install_new_atom_helper (s)
 }
 
 install_new_atom_helper :: proc (b : string) -> Ptr {
@@ -49,7 +49,6 @@ install_new_atom_helper :: proc (b : string) -> Ptr {
 }
 
 intern :: proc (s : string) -> Ptr {
-    fmt.println ("intern", s)
     
     // scan all Atoms
     // if s is aready an Atom, return a Ptr to the first atom cell of that Atom
@@ -58,19 +57,14 @@ intern :: proc (s : string) -> Ptr {
     // search for existing
     head : Ptr = FIRSTAtom
     for head != lisp_nil {
-	fmt.println ("intern for", head)
 	if match_string_from_beginning (s, head) {
-	    fmt.println ("intern matched", head)
 	    return head
 	}
-	fmt.println ("intern NOT matched", head)
 	head = find_next_atom (head)
-	fmt.println ("intern NOT matched found next", head)
 	fmt.assertf ((head == lisp_nil) || is_Atom (head), "FATAL internal error in intern")
     }
 
     // install new
-    fmt.println ("intern installing")
     a := install_new_atom (s)
     return a
 }

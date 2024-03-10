@@ -1,7 +1,7 @@
 package smalllisp
 import uni "core:unicode/utf8"
 
-MemSize :: 128+1
+MemSize :: 256+1
 MemMiddle :: MemSize / 2
 MemPtr :: i16
 Ptr :: MemPtr
@@ -14,7 +14,7 @@ CDRsize :: 1
 CellLength :: CARsize + CDRsize
 CDRoffset :: CARsize
 
-FIRSTAtom :: 1
+FIRSTAtom :: 0
 FIRSTList :: -2
 
 mem := [MemSize]Ptr{}
