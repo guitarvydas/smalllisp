@@ -14,6 +14,7 @@ input6 := "(A)"
 input7 := "(A B)"
 input8 := "(C (D))"
 input9 := "(E (F G) H)"
+input10 := "(J K . L)"
 
 input := input6
 
@@ -59,26 +60,30 @@ main :: proc () {
     /* test (input3) */
     /* test (input4) */
     /* test_2 (input5) */
-    test (input6)
-    test (input7)
-    test (input8)
-    test (input9)
-    fmt.println (ufFormat (0))
-    fmt.println (ufFormat (6))
-    fmt.println (ufFormat (8))
-    fmt.println (ufFormat (12))
-    fmt.println (ufFormat (18))
-    fmt.println (ufFormat (24))
-    fmt.println (ufFormat (32))
-    fmt.println (ufFormat (40))
-    fmt.println (ufFormat (48))
+    /* test (input6) */
+    /* test (input7) */
+    /* test (input8) */
+    /* test (input9) */
+    /* fmt.println (ufFormat (0)) */
+    /* fmt.println (ufFormat (6)) */
+    /* fmt.println (ufFormat (8)) */
+    /* fmt.println (ufFormat (12)) */
+    /* fmt.println (ufFormat (18)) */
+    /* fmt.println (ufFormat (24)) */
+    /* fmt.println (ufFormat (32)) */
+    /* fmt.println (ufFormat (40)) */
+    /* fmt.println (ufFormat (48)) */
 
+    /* fmt.println (ufFormat (58)) */
+    /* fmt.println (ufFormat (60)) */
+    /* fmt.println (ufFormat (62)) */
+    /* fmt.println (ufFormat (64)) */
+
+    /* fmt.println (ufFormat (-10)) */
+
+    /* fmt.println (format (-10)) */
+
+    test (input10)
     fmt.println (ufFormat (58))
-    fmt.println (ufFormat (60))
-    fmt.println (ufFormat (62))
-    fmt.println (ufFormat (64))
-
-    fmt.println (ufFormat (-10))
-
-    fmt.println (format (-10))
+    fmt.println (format (-4))
 }

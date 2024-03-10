@@ -101,6 +101,14 @@ ReadListInnards :: proc () -> Ptr {
     fmt.assertf (r != EOF, "FATAL error: unterminated list, EOF encountered before matching ')'")
     if r == ')' {
 	return lisp_nil
+    } else if r == '.' {
+	ret := Read ()
+	r := get_non_whitespace ()
+	if r != ')' {
+	    fmt.printf ("Syntax error: missing ')' in dot expression\n")
+	    put_back (r)
+	}
+	return ret
     } else {
 	put_back (r)
 	first := Read ()
