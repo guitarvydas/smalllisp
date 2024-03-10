@@ -126,6 +126,9 @@ format :: proc (p : Ptr) -> string {
 
 lformat :: proc (b : ^strings.Builder, p : Ptr) {
     if is_Nil (p) {
+    } else if is_Atom (p) {
+	strings.write_string (b, " . ")
+	strings.write_string (b, format (p))
     } else {
 	strings.write_string (b, " ")
 	strings.write_string (b, format (Car (p)))
