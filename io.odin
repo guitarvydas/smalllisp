@@ -109,6 +109,32 @@ ReadListInnards :: proc () -> Ptr {
     }
 }
 
+format :: proc (p : Ptr) -> string {
+    if is_Nil (p) {
+	return "()"
+    } else if is_Atom (p) {
+	return atom_as_String (p)
+    } else {
+	b := strings.builder_make ()
+	strings.write_string (&b, "(")
+	strings.write_string (&b, format (Car (p)))
+	lformat (&b, Cdr (p))
+	strings.write_string (&b, ")")
+	return strings.to_string (b)
+    }
+}
+
+lformat :: proc (b : ^strings.Builder, p : Ptr) {
+    if is_Nil (p) {
+    } else {
+	strings.write_string (b, " ")
+	strings.write_string (b, format (Car (p)))
+	lformat (b, Cdr (p))
+    }
+}
+
+
+
 // uf ==> unfriendly
 ufFormat :: proc (p : Ptr) -> string {
     if is_Nil (p) {

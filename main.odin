@@ -80,4 +80,5 @@ main :: proc () {
 
     fmt.println (ufFormat (-10))
 
+    fmt.println (format (-10))
 }
