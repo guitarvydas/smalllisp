@@ -84,6 +84,8 @@ main :: proc () {
     /* fmt.println (format (-10)) */
 
     test (input10)
+    fmt.println (mem[0:MemMiddle])
+		 fmt.println (mem[MemMiddle:])
     fmt.println (ufFormat (58))
     fmt.println (format (-4))
 }

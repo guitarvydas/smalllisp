@@ -4,8 +4,8 @@
 - Odin is a GC-less language, this implementation does not need a heap-based GC (i.e. no RAM-style mutation)
 
 # Status
-- Read and format implemented (i.e. the hard part) w/o (? . ?) input syntax
+- Read and format implemented (i.e. the hard part)
 - still need to implement Eval() and Apply() and TGC()
 
 # TODO:
-- read (? . ?) syntax (not currently supported)
+
