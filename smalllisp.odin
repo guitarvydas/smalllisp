@@ -17,8 +17,6 @@ Null :: proc (p : Ptr) -> bool { return p == offset }
 nextAtom : Ptr = FIRSTAtom
 nextList : Ptr = FIRSTList
 
-mem := [MemSize]Ptr{}
-
 GetByte :: proc (p : Ptr) -> byte {
     return cast (byte) mem [p + offset]
 }
@@ -28,14 +26,14 @@ SetByte :: proc (p : Ptr, v : byte) {
 }
 
 AllocAtom :: proc () -> Ptr {
-    fmt.assertf ((nextAtom + offset) > 0, "out of (atom) memory\n")
+    fmt.assertf (within_mem_boundaries (nextAtom), "out of (atom) memory\n")
     r := nextAtom
     nextAtom = nextAtom - CellLength
     return r
 }
 
 AllocList :: proc () -> Ptr { 
-    fmt.assertf ((nextList + offset) < len (mem) - lisp_nil, "out of (list) memory\n")
+    fmt.assertf (within_mem_boundaries (nextList), "out of (list) memory\n")
     r := nextList
     nextList = nextList + CellLength
     return r
@@ -48,3 +46,20 @@ Cons :: proc (left : Ptr, right : Ptr) -> Ptr {
     return p
 }
 
+initialize :: proc () {
+    nextAtom  = FIRSTAtom
+    nextList  = FIRSTList
+    for i := 0 ; i < len (mem) ; i += 1 {
+	mem [i] = 0
+    }
+    n := intern ("nil")
+    Set (0, n)
+    Set (0+1, 0)
+    intern ("t")
+    intern ("car")
+    intern ("cdr")
+    intern ("atom")
+    intern ("cond")
+    intern ("cons")
+    intern ("quote")
+}

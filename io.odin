@@ -123,12 +123,16 @@ Format :: proc (p : Ptr) -> string {
 }
 
 atom_as_String :: proc (p : Ptr) -> string {
-    bp := strings.builder_make ()
-    return strings.to_string (bp)
+    fmt.println ("atom_as_String", p)
+    b := strings.builder_make ()
+    atom_as_Builder (p, &b)
+    fmt.println (b)
+    return strings.to_string (b)
 }
 
 atom_as_Builder :: proc (p : Ptr, builderp : ^strings.Builder) -> ^strings.Builder {
     c := GetByte (p)
+    fmt.println ("atom_as_Builder", p, c)
     if c == EOF {
 	strings.write_byte (builderp, c)
     } else {

@@ -25,7 +25,7 @@ dump_mem :: proc () {
 		Get (7), Get (8),
 		Get (9), Get (10)
 	       )
-    fmt.printf ("  %x\n", Get (0))
+    fmt.printf ("  [%x|%4X]\n", Get (0))
     fmt.printf ("  [%x|%4X] [%x|%4X] [%x|%4X] [%x|%4X] [%x|%4X]\n",
 		Get (-2), Get (-1),
 		Get (-4), Get (-3),
@@ -35,17 +35,9 @@ dump_mem :: proc () {
 	       )
 }
 
-reset_mem :: proc () {
-    nextAtom  = FIRSTAtom
-    nextList  = FIRSTList
-    for i := 0 ; i < len (mem) ; i += 1 {
-	mem [i] = 0
-    }
-}
-
 test :: proc (inp : string) {
     input = inp
-    reset_mem ()
+    initialize ()
     fmt.printf ("\n\n\n*** %v\n", input)
     open ()
     fmt.println ("test", Read())
@@ -55,7 +47,7 @@ test :: proc (inp : string) {
 
 test_2 :: proc (inp : string) {
     input = inp
-    reset_mem ()
+    initialize ()
     fmt.printf ("\n\n\n*** test_2 *** %v\n", input)
     open ()
     fmt.println ("test_2", Read())
@@ -75,4 +67,6 @@ main :: proc () {
     /* test (input7) */
     /* test (input8) */
     test (input9)
+    fmt.println (Format (0))
+    fmt.println (Format (-1))
 }
