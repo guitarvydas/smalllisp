@@ -7,9 +7,14 @@ import uni "core:unicode/utf8"
 ////////
 
 input_index : int
+previous_index : int // need at most one put_back
+input : string
 
-open :: proc () {
+open_on_string :: proc (s : string) {
+    // early test that streams over a string of characters
+    input = s
     input_index = 0
+    previous_index = 0
 }
 
 close :: proc () {
@@ -20,6 +25,7 @@ getr :: proc () -> rune {
 	return EOF
     } else {
 	r := uni.rune_at_pos (input, input_index)
+	previous_index = input_index
 	input_index += uni.rune_size (r)
 	return r
     }
@@ -27,8 +33,9 @@ getr :: proc () -> rune {
 
 put_back :: proc (r : rune) {
     if r != EOF {
-	input_index -= 1
-	fmt.assertf (r == uni.rune_at_pos (input, input_index), "FATAL in put_back")
+	fmt.assertf (previous_index < input_index, "FATAL (1) in put_back %d %d", previous_index, input_index)
+	input_index = previous_index
+	fmt.assertf (r == uni.rune_at_pos (input, input_index), "FATAL (2) in put_back %v %v", r, uni.rune_at_pos (input, input_index))
     }
 }
 
@@ -75,19 +82,19 @@ Read :: proc () -> Ptr {
 }
 
 ReadAtom :: proc (parsed_c : rune) -> Ptr {
-    save_rune :: proc (r : rune, buffer : ^strings.Builder) {
-	strings.write_rune (buffer, r)
+    save_rune :: proc (r : rune, input : ^strings.Builder) {
+	strings.write_rune (input, r)
     }
-    buffer := strings.builder_make ()
-    save_rune (parsed_c, &buffer)
+    input := strings.builder_make ()
+    save_rune (parsed_c, &input)
     {
 	c := rune{}
 	for c = getr () ; !is_terminator (c) ; c = getr (){
-	    save_rune (c, &buffer)
+	    save_rune (c, &input)
 	}
 	put_back (c)
     }
-    p := intern (strings.to_string (buffer))
+    p := intern (strings.to_string (input))
     return p
 }
 
@@ -116,6 +123,9 @@ ReadListInnards :: proc () -> Ptr {
 	return Cons (first, rest)
     }
 }
+
+
+/// output
 
 format :: proc (p : Ptr) -> string {
     if is_Nil (p) {
@@ -176,4 +186,9 @@ atom_as_Builder :: proc (p : Ptr, builderp : ^strings.Builder) -> ^strings.Build
 	}
     }
     return builderp
+}
+
+
+print :: proc (p : Ptr) {
+    fmt.println (format (p))
 }

@@ -19,6 +19,9 @@ FIRSTList :: -2
 
 mem := [MemSize]Ptr{}
 
+Sexpr :: MemPtr
+Alist :: MemPtr
+
 // atom: +ve indices, car == 1 byte (character), cdr == Ptr
 // list: -ve indices,  car == Ptr, cdr == Ptr
 // where Ptr might be 0, meaning nil

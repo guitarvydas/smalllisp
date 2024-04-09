@@ -16,7 +16,8 @@ input8 := "(C (D))"
 input9 := "(E (F G) H)"
 input10 := "(J K . L)"
 
-input := input6
+input11 := "A"
+
 
 dump_mem :: proc () {
     fmt.printf ("atoms: ")
@@ -31,26 +32,34 @@ dump_mem :: proc () {
 }
 
 test :: proc (inp : string) {
-    input = inp
     initialize ()
-    fmt.printf ("\n\n\n*** %v\n", input)
-    open ()
-    fmt.printf ("test -> %x\n", Read())
+    fmt.printf ("\n\n\n*** %v\n", inp)
+    open_on_string (inp)
+    r := Read ()
+    fmt.printf ("test -> %x\n", r)
     dump_mem ()
     close ()
 }
 
 test_2 :: proc (inp : string) {
-    input = inp
     initialize ()
-    fmt.printf ("\n\n\n*** test_2 *** %v\n", input)
-    open ()
+    fmt.printf ("\n\n\n*** test_2 *** %v\n", inp)
+    open_on_string (inp)
     fmt.printf ("test_2 -> %x\n", Read())
     dump_mem ()
     fmt.printf ("test_2 -> %x\n", Read())
     dump_mem ()
     close ()
 }
+
+test_read :: proc (inp : string) -> MemPtr {
+    initialize ()
+    open_on_string (inp)
+    r := Read ()
+    close ()
+    return r
+}
+
 
 main :: proc () {
     initialize ()
@@ -83,9 +92,12 @@ main :: proc () {
 
     /* fmt.println (format (-10)) */
 
-    test (input10)
-    fmt.println (mem[0:MemMiddle])
-		 fmt.println (mem[MemMiddle:])
-    fmt.println (ufFormat (58))
-    fmt.println (format (-4))
+    /* test (input10) */
+    /* fmt.println (mem[0:MemMiddle]) */
+    /* 		 fmt.println (mem[MemMiddle:]) */
+    /* fmt.println (ufFormat (58)) */
+    /* fmt.println (format (-4)) */
+
+    r := test_read (input11)
+    fmt.println (format (r))
 }
