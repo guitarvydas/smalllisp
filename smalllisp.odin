@@ -62,3 +62,6 @@ initialize :: proc () {
     install_new_atom ("cons")	// 40
     install_new_atom ("quote")	// 48
 }
+
+
+
