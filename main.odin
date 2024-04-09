@@ -98,5 +98,5 @@ main :: proc () {
     /* fmt.println (ufFormat (58)) */
     /* fmt.println (format (-4)) */
 
-    print (test_read (input11))
+    print (test_read (input6))
 }
