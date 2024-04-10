@@ -46,21 +46,42 @@ Cons :: proc (left : Ptr, right : Ptr) -> Ptr {
     return p
 }
 
+kNil : i16 // 0
+kT : i16 // 6
+kEq : i16 // 8
+kCar : i16 // 12
+kCdr : i16 // 18
+kAtom : i16 // 24
+kCond : i16 // 32
+kCons : i16 // 40
+kQuote : i16 // 48
+
 initialize :: proc () {
     for i := 0 ; i < len (mem) ; i += 1 {
 	mem [i] = 0
     }
     nextAtom  = FIRSTAtom
     nextList  = FIRSTList
-    install_new_atom ("nil")	// 0
-    install_new_atom ("t")	// 6
-    install_new_atom ("eq")	// 8
-    install_new_atom ("car")	// 12
-    install_new_atom ("cdr")	// 18
-    install_new_atom ("atom")	// 24
-    install_new_atom ("cond")	// 32
-    install_new_atom ("cons")	// 40
-    install_new_atom ("quote")	// 48
+    kNil = nextAtom
+    install_new_atom ("nil")
+    kT = nextAtom
+    install_new_atom ("t")
+    kEq = nextAtom
+    install_new_atom ("eq")
+    kCar= nextAtom
+    install_new_atom ("car")
+    kCdr = nextAtom
+    install_new_atom ("cdr")
+    kAtom = nextAtom
+    install_new_atom ("atom")
+    kCond = nextAtom
+    install_new_atom ("cond")
+    kCons = nextAtom
+    install_new_atom ("cons")
+    kQuote = nextAtom
+    install_new_atom ("quote")
+    fmt.printf ("\nnil=%v t=%v eq=%v car=%v cdr=%v atom=%v cond=%v cons=%v quote=%v\n",
+		kNil, kT, kEq, kCar, kCdr, kAtom, kCond, kCons, kQuote)
 }
 
 

@@ -17,6 +17,7 @@ input9 := "(E (F G) H)"
 input10 := "(J K . L)"
 
 input11 := "A"
+input12 := "(QUOTE A)"
 
 
 dump_mem :: proc () {
@@ -98,5 +99,5 @@ main :: proc () {
     /* fmt.println (ufFormat (58)) */
     /* fmt.println (format (-4)) */
 
-    print (test_read (input6))
+    print (test_read (input12))
 }
