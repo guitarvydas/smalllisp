@@ -21,12 +21,7 @@ Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
 	    return kFalse
 	case:
 	    v := lookup (e, env)
-	    if (v == kNil) {
-		fatal (fmt.aprintf ("%v not defined", format (v)))
-		return kNil
-	    } else {
-		return v
-	    }
+	    return v
 	}
 	//! finish ()
 	//! return
@@ -42,29 +37,29 @@ Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
 	    switch (atom_name (first_item)) {
 	    case kEq: // "eq"
 		if second (e) == third (e) {
-		    return kTrue //! result (kT)
+		    return kTrue
 		} else {
-		    return (kNil) //!
+		    return (kNil)
 		}
 	    case kCar: // "car"
-		return first (second (e)) //!result (first (second (e)))
+		return first (second (e))
 	    case kCdr: // "cdr"
-		return second (second (e)) //! result (second (second (e)))
+		return second (second (e))
 	    case kAtom:  // "atom"
 		if is_Atom (second (e)) {
-		    return kTrue //! result (kTrue)
+		    return kTrue
 		} else {
-		    return kNil //! result (kNil)
+		    return kNil
 		}
 	    case kCons: // "cons"
-		return (Cons (second (e), third (e))) //!		result (Cons (second (e), third (e)))
+		return (Cons (second (e), third (e)))
 	    case kQuote: // "quote"
-		return (second (e)) //! result (second (e))
+		return (second (e))
 	    case kCond: // "cond"
-		return interpret_conditional (rest (e), env) //!
+		return interpret_conditional (rest (e), env)
 	    case: // else error
-		panic (fmt.aprintf ("Eval %v %v", format (e), format (env)))
-		return kNil //!
+		panic (fmt.aprintf ("Eval %v %v %v %v", e, format (e), env, format (env)))
+		return kNil
 	    }
 	    //! finish()
 	    //! return

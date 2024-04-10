@@ -3,7 +3,7 @@ import "core:fmt"
 import "core:strings"
 
 match_string_from_beginning :: proc (s : string, atom_ptr : Ptr) -> bool {
-    fmt.assertf (is_Atom (atom_ptr), "FATAL internal error in match_string_from_beginning (nil) %v", atom_ptr)
+    fmt.assertf (is_Nil (atom_ptr) || is_Atom (atom_ptr), "FATAL internal error in match_string_from_beginning (nil) %v", atom_ptr)
     fmt.assertf (len (s) > 0, "FATAL internal error in match_string_from_beginning (len s) %v", atom_ptr)
     return match_string (s, atom_ptr)
 }
@@ -26,10 +26,16 @@ match_string :: proc (s : string, atom_ptr : Ptr) -> bool {
 
 find_next_atom :: proc (p : Ptr) -> Ptr {
     next := Cdr (p)
-    for lisp_nil != next {
+    for lisp_nil != Cdr (next) {
 	next = Cdr (next)
     }
-    return next
+    next += CellLength
+    if next >= nextAtom {
+	return lisp_nil
+    } else {
+	return next
+    }
+    return lisp_nil
 }
 
 install_new_atom :: proc (s : string) -> Ptr {
@@ -56,16 +62,22 @@ intern :: proc (s : string) -> Ptr {
 
     // search for existing
     head : Ptr = FIRSTAtom
-    for head != lisp_nil {
-	if match_string_from_beginning (s, head) {
-	    return head
-	}
+    if s == "nil" {
+	return head
+    } else {
 	head = find_next_atom (head)
 	fmt.assertf ((head == lisp_nil) || is_Atom (head), "FATAL internal error in intern")
+	for head != lisp_nil {
+	    if match_string_from_beginning (s, head) {
+		return head
+	    }
+	    head = find_next_atom (head)
+	    fmt.assertf ((head == lisp_nil) || is_Atom (head), "FATAL internal error in intern")
+	}
+	
+	// install new
+	a := install_new_atom (s)
+	return a
     }
-
-    // install new
-    a := install_new_atom (s)
-    return a
 }
 		

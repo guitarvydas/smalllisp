@@ -26,6 +26,10 @@ SetByte :: proc (p : Ptr, v : byte) {
     mem [p + offset] = cast (Ptr) v
 }
 
+GetRune :: proc (p : Ptr) -> rune {
+    return cast (rune) mem [p + offset]
+}
+
 AllocAtom :: proc () -> Ptr {
     fmt.assertf (within_mem_boundaries (nextAtom), "out of (atom) memory\n")
     r := nextAtom
@@ -84,7 +88,7 @@ initialize :: proc () {
     install_new_atom ("cons")
     kQuote = nextAtom
     install_new_atom ("quote")
-    // fmt.printf ("\nnil=%v #t=%v #f=%v eq=%v car=%v cdr=%v atom=%v cond=%v cons=%v quote=%v\n", kNil, kTrue, kFalse, kEq, kCar, kCdr, kAtom, kCond, kCons, kQuote)
+    //fmt.printf ("\nnil=%v #t=%v #f=%v eq=%v car=%v cdr=%v atom=%v cond=%v cons=%v quote=%v\n", kNil, kTrue, kFalse, kEq, kCar, kCdr, kAtom, kCond, kCons, kQuote)
 }
 
 
@@ -103,9 +107,9 @@ rest :: proc (l : MemPtr) -> MemPtr {
 }
 
 panic :: proc (s : string) {
-    fmt.println (s)
+    fmt.printf ("\n\e[31mpanic\e[0m %v\n\n", s)
     os.exit (1)
 }
 fatal :: proc (s : string) {
-    fmt.println (s)
+    fmt.printf ("\n\e[31mfatal\e[0m %v\n\n", s)
 }
