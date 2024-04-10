@@ -38,3 +38,7 @@ within_mem_boundaries :: proc (p : Ptr) -> bool {
     x := p + offset
     return x >= 0 && x < len (mem)
 }
+
+rune_at :: proc (p : MemPtr) -> rune {
+    return cast (rune) mem [p]
+}

@@ -2,6 +2,7 @@ package smalllisp
 
 import "core:fmt"
 import "core:strings"
+import "core:os"
 
 
 
@@ -47,7 +48,8 @@ Cons :: proc (left : Ptr, right : Ptr) -> Ptr {
 }
 
 kNil : i16 // 0
-kT : i16 // 6
+kFalse : i16 // 0
+kTrue : i16 // 6
 kEq : i16 // 8
 kCar : i16 // 12
 kCdr : i16 // 18
@@ -64,8 +66,10 @@ initialize :: proc () {
     nextList  = FIRSTList
     kNil = nextAtom
     install_new_atom ("nil")
-    kT = nextAtom
-    install_new_atom ("t")
+    kTrue = nextAtom
+    install_new_atom ("#t")
+    kFalse = nextAtom
+    install_new_atom ("#f")
     kEq = nextAtom
     install_new_atom ("eq")
     kCar= nextAtom
@@ -80,9 +84,28 @@ initialize :: proc () {
     install_new_atom ("cons")
     kQuote = nextAtom
     install_new_atom ("quote")
-    fmt.printf ("\nnil=%v t=%v eq=%v car=%v cdr=%v atom=%v cond=%v cons=%v quote=%v\n",
-		kNil, kT, kEq, kCar, kCdr, kAtom, kCond, kCons, kQuote)
+    // fmt.printf ("\nnil=%v #t=%v #f=%v eq=%v car=%v cdr=%v atom=%v cond=%v cons=%v quote=%v\n", kNil, kTrue, kFalse, kEq, kCar, kCdr, kAtom, kCond, kCons, kQuote)
 }
 
 
 
+first :: proc (l : MemPtr) -> MemPtr {
+    return Car (l)
+}
+second :: proc (l : MemPtr) -> MemPtr {
+    return Car (Cdr (l))
+}
+third :: proc (l : MemPtr) -> MemPtr {
+    return Car (Cdr (Cdr (l)))
+}
+rest :: proc (l : MemPtr) -> MemPtr {
+    return Cdr (l)
+}
+
+panic :: proc (s : string) {
+    fmt.println (s)
+    os.exit (1)
+}
+fatal :: proc (s : string) {
+    fmt.println (s)
+}
