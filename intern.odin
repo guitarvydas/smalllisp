@@ -25,17 +25,23 @@ match_string :: proc (s : string, atom_ptr : Ptr) -> bool {
 }
 
 find_next_atom :: proc (p : Ptr) -> Ptr {
-    next := Cdr (p)
-    for lisp_nil != Cdr (next) {
-	next = Cdr (next)
-    }
-    next += CellLength
-    if next >= nextAtom {
-	return lisp_nil
+    // follow chain of characters until end of string (cdr == lisp_nil), then return the atom-after-that
+    // p can be lisp_nil the first time around (since we start the search with nil)
+    if p != lisp_nil && !is_Atom (p) { panic (fmt.aprintf ("find_next_atom (b) %v", p)) }
+    return find_next_atom_rec (p)
+}
+
+find_next_atom_rec :: proc (cellp : Ptr) -> Ptr {
+    if Cdr (cellp) == lisp_nil {
+	next_cell : MemPtr = cellp + CellLength
+	if  next_cell >= nextAtom {
+	    return lisp_nil
+	} else {
+	    return next_cell
+	}
     } else {
-	return next
+	return find_next_atom_rec (Cdr (cellp))
     }
-    return lisp_nil
 }
 
 install_new_atom :: proc (s : string) -> Ptr {
@@ -55,7 +61,11 @@ install_new_atom_helper :: proc (b : string) -> Ptr {
 }
 
 intern :: proc (s : string) -> Ptr {
+    p := intern_hidden (s)
+    return p
+}
     
+intern_hidden :: proc (s : string) -> Ptr {
     // scan all Atoms
     // if s is aready an Atom, return a Ptr to the first atom cell of that Atom
     // if s is not already an Atom, make an Atom with the given name and return a Ptr to the first cell

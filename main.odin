@@ -18,6 +18,11 @@ input10 := "(J K . L)"
 
 input11 := "A"
 input12 := "(quote A)"
+input13 := "(quote (B))"
+input14 := "(car (quote (C)))"
+input15 := "(quote (D E))"
+input16 := "(car (quote (D E)))"
+input17 := "(quote (F G))"
 
 
 dump_mem :: proc () {
@@ -99,5 +104,10 @@ main :: proc () {
     /* fmt.println (ufFormat (58)) */
     /* fmt.println (format (-4)) */
 
-    print (Eval (test_read (input12), kNil))
+    s := input17
+    fmt.printf ("begin '%v'\n", s)
+    r := test_read (s)
+    fmt.printf ("r: %v\n", r)
+    fmt.printf ("read: %v\n", format (r))
+    print (Eval (r, kNil))
 }

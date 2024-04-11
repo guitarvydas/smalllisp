@@ -11,6 +11,7 @@ import uni "core:unicode/utf8"
 // Eval may refer to parameters stack but does not mutate it.
 
 Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
+    fmt.printf ("Eval %v in %v\n", format (e), format (env))
     if is_Atom (e) { // e is an atom ...
 	switch (e) {
 	case kNil: 
@@ -42,9 +43,9 @@ Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
 		    return (kNil)
 		}
 	    case kCar: // "car"
-		return first (second (e))
+		return first (Eval (second (e), env))
 	    case kCdr: // "cdr"
-		return second (second (e))
+		return second (Eval (second (e), env))
 	    case kAtom:  // "atom"
 		if is_Atom (second (e)) {
 		    return kTrue
