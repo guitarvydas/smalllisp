@@ -11,8 +11,10 @@ import uni "core:unicode/utf8"
 // Eval may refer to parameters stack but does not mutate it.
 
 Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
-    fmt.printf ("Eval %v in %v\n", format (e), format (env))
-    if is_Atom (e) { // e is an atom ...
+    fmt.printf ("Eval [%v] %v in %v\n", e, format (e), format (env))
+    if is_Nil (e) {
+	return kNil
+    } else if is_Atom (e) { // e is an atom ...
 	switch (e) {
 	case kNil: 
 	    return kNil
@@ -20,40 +22,37 @@ Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
 	    return kTrue
 	case kFalse: 
 	    return kFalse
-	case:
+	    case:
 	    v := lookup (e, env)
 	    return v
 	}
-	//! finish ()
-	//! return
     } else { // e is a list
 	first_item := Car (e)
 	if !is_Atom (first_item) { // (car e) is a list, too
 	    // first item is a list, hence, this list must be an anonymous function (a LAMBDA)
 	    remainder := Cdr (e)
 	    return Apply_anonymous_function (first_item, rest (e), env)
-	    //! finish ()
-	    //! return
 	} else { // (car e) is an atom, it must be one of the builtins
+	    fmt.printf ("Eval switching on %v %v cond=%v\n", atom_name (first_item), format (atom_name (first_item)), kCond)
 	    switch (atom_name (first_item)) {
 	    case kEq: // "eq"
-		if second (e) == third (e) {
+		if Eval (second (e), env) == Eval (third (e), env) {
 		    return kTrue
 		} else {
-		    return (kNil)
+		    return kNil
 		}
 	    case kCar: // "car"
 		return first (Eval (second (e), env))
 	    case kCdr: // "cdr"
 		return second (Eval (second (e), env))
 	    case kAtom:  // "atom"
-		if is_Atom (second (e)) {
+		if is_Atom (Eval (second (e), env)) {
 		    return kTrue
 		} else {
 		    return kNil
 		}
 	    case kCons: // "cons"
-		return (Cons (second (e), third (e)))
+		return (Cons (Eval (second (e), env), Eval (third (e), env)))
 	    case kQuote: // "quote"
 		return (second (e))
 	    case kCond: // "cond"
@@ -62,8 +61,6 @@ Eval :: proc (e : Sexpr, env : Alist) -> MemPtr {
 		panic (fmt.aprintf ("Eval %v %v %v %v", e, format (e), env, format (env)))
 		return kNil
 	    }
-	    //! finish()
-	    //! return
 	}
     }
     panic (fmt.aprintf ("Eval fell through %v %v", format (e), format (env)))

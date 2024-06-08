@@ -4,26 +4,6 @@ package smalllisp
 
 import "core:fmt"
 
-input1 := "1"
-input2 := "12"
-input3 := "123"
-input4 := "1234"
-input5 := "5 6"
-
-input6 := "(A)"
-input7 := "(A B)"
-input8 := "(C (D))"
-input9 := "(E (F G) H)"
-input10 := "(J K . L)"
-
-input11 := "A"
-input12 := "(quote A)"
-input13 := "(quote (B))"
-input14 := "(car (quote (C)))"
-input15 := "(quote (D E))"
-input16 := "(car (quote (D E)))"
-input17 := "(quote (F G))"
-
 
 dump_mem :: proc () {
     fmt.printf ("atoms: ")
@@ -70,6 +50,18 @@ test_read :: proc (inp : string) -> MemPtr {
 main :: proc () {
     initialize ()
 
+    input1 := "1"
+    input2 := "12"
+    input3 := "123"
+    input4 := "1234"
+    input5 := "5 6"
+    
+    input6 := "(A)"
+    input7 := "(A B)"
+    input8 := "(C (D))"
+    input9 := "(E (F G) H)"
+    input10 := "(J K . L)"
+    
     /* test (input1) */
     /* test (input2) */
     /* test (input3) */
@@ -104,10 +96,33 @@ main :: proc () {
     /* fmt.println (ufFormat (58)) */
     /* fmt.println (format (-4)) */
 
-    s := input17
-    fmt.printf ("begin '%v'\n", s)
+    input11 := "A"
+    input12 := "(quote A)"
+    input13 := "(quote (B))"
+    input14 := "(car (quote (C)))"
+    input15 := "(quote (D E))"
+    input16 := "(car (quote (D E)))"
+    input17 := "(quote (F G))"
+
+    /* s := input16 */
+    /* fmt.printf ("begin '%v'\n", s) */
+    /* r := test_read (s) */
+    /* fmt.printf ("r: %v\n", r) */
+    /* fmt.printf ("read: %v\n", format (r)) */
+    /* print (Eval (r, kNil)) */
+
+    /* s := input16 */
+    /* r := test_read (s) */
+    /* print (Eval (r, kNil)) */
+
+//    s := "(car (quote (D E)))"
+//    s := "(atom (quote X))"
+//    s := "(atom (quote (Y Z)))"
+//    s := "(eq (quote P) (quote P))"
+//    s := "(eq (quote P) (quote Q))"
+//    s := "(cons (quote P) (quote Q))"
+    s := "(cond () (quote No) (quote Yes) (quote Yes))"
     r := test_read (s)
-    fmt.printf ("r: %v\n", r)
-    fmt.printf ("read: %v\n", format (r))
     print (Eval (r, kNil))
+
 }

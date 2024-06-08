@@ -1,7 +1,8 @@
 # small lisp written in Odin 
-- based on McCarthy's 1.5 and Tunney's Sector Lisp
-- notably, uses Tunney's functional GC (doesn't need a heap nor stop-the-world behaviour)
-- Odin is a GC-less language, this implementation does not need a heap-based GC (i.e. no RAM-style mutation)
+main points:
+- modernized Lisp 1.5 written in a non-GC language (Odin)
+- using Tunney's tiny garbage collector (true FP) instead of mutation and shared memory RAM-style GC
+- uses Unicode instead of ASCII
 
 # Status
 - Read and format implemented (i.e. the hard part)
